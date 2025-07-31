@@ -1,0 +1,32 @@
+body {
+    background: #0B0D10;
+}
+
+.banner {
+    background: #0F1317;
+}
+
+.settings-back-btn {
+    background: #0F1317;
+}
+
+.settings-back-icon {
+    color: #fff;
+}
+
+.settings-title {
+    color: #fff;
+}
+
+.setting-btn {
+    color: #fff;
+    border: 1px solid #1B212880;
+}
+
+.theme-btn {
+    background: #1E252C;
+}
+
+.setting-btn:hover {
+    background: #101418;
+}

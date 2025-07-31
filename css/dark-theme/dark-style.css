@@ -1,0 +1,20 @@
+body {
+    background: #0B0D10;
+}
+
+.title {
+    color: #fff;
+}
+
+.text {
+    color: #728A96;
+}
+
+.create-video-btn {
+    background: #0F1317;
+    color: #728A96;
+}
+
+.create-video-btn:hover {
+    background: #13181d;
+}

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Photo Mini-App</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --violet-dark:#140019;
+    --violet:#43135c;
+    --violet-light:#5d2b7b;
+    --txt:#fff;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+  body{
+    min-height:100vh;color:var(--txt);
+    background:
+      radial-gradient(circle at 20% 10%,rgba(255,255,255,.06) 0 8%,transparent 10%) repeat,
+      radial-gradient(circle at 80% 80%,rgba(255,255,255,.04) 0 6%,transparent 8%) repeat,
+      linear-gradient(145deg,var(--violet) 0%,var(--violet-dark) 100%);
+    background-size:120px 120px,160px 160px,100% 100%;
+    display:flex;align-items:center;justify-content:center;
+    padding:3vh 3vw;
+  }
+
+  .hidden{display:none!important}
+
+  .grid{
+    display:grid;
+    gap:10px;
+    width:100%;
+    max-width:380px;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  }
+
+  .span-2{grid-column:span 2}
+
+  button{
+    background:var(--violet);
+    border:2px solid rgba(255,255,255,.07);
+    border-radius:var(--radius);
+    color:var(--txt);
+    font-size:18px;
+    font-weight:600;
+    padding:14px 12px;
+    text-align:left;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    transition:background .25s,transform .15s;
+    width:100%;
+  }
+  button:active{transform:scale(.97)}
+  button:hover{background:var(--violet-light)}
+  .icon{font-size:1.4em;flex:0 0 auto}
+  @media(max-width:380px){button{font-size:16px}}
+
+  #btnHelp{justify-content:center;text-align:center}
+
+  .info-wrap{
+    max-width:380px;width:100%;
+    background:rgba(0,0,0,.35);
+    border:2px solid rgba(255,255,255,.1);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    line-height:1.36;
+    font-size:16px;
+  }
+  .info-wrap h3{margin:0 0 8px;font-size:17px}
+  .info-wrap p{margin:10px 0}
+</style>
+</head>
+<body>
+
+<section id="page-main">
+  <div class="grid">
+    <button id="btnPhoto"><span class="icon">📷</span> Создать фото</button>
+    <button id="btnVideo"><span class="icon">🎬</span> Создать видео</button>
+
+    <button id="btnAgent"><span class="icon">🧬</span> Создать агента</button>
+    <button id="btnClothes"><span class="icon">👕</span> Сменить одежду</button>
+
+    <button id="btnSwitchAgent"><span class="icon">🔄</span> Сменить агента</button>
+    <button id="btnFilters"><span class="icon">🎨</span> Наши фильтры</button>
+
+    <button id="btnBalance"><span class="icon">🔍</span> Мой баланс</button>
+    <button id="btnBuy"><span class="icon">💰</span> Купить генерации</button>
+
+    <button id="btnHelp" class="span-2"><span class="icon">ℹ️</span> Помощь</button>
+  </div>
+</section>
+
+<section id="page-filters" class="hidden">
+  <div class="grid">
+    <button id="back-filters" class="span-2"><span class="icon">⬅️</span> Назад</button>
+
+    <button data-filter="yakut_woman"><span class="icon">👸</span> Женский якутский костюм</button>
+    <button data-filter="yakut_man"><span class="icon">👑</span> Мужской якутский костюм</button>
+
+    <button data-filter="vibe"><span class="icon">💰</span> Миллиардер Vibe</button>
+    <button data-filter="on_beach"><span class="icon">🏖️</span> На пляже</button>
+    <button data-filter="photoshoot"><span class="icon">📸</span> Фотосессия</button>
+    <button data-filter="portrait"><span class="icon">🖼️</span> Портрет</button>
+    <button data-filter="children"><span class="icon">👶</span> Ребёнок</button>
+    <button data-filter="nature_spirit"><span class="icon">🌿</span> Дух природы</button>
+    <button data-filter="ufc_fighter"><span class="icon">🥊</span> Боец UFC</button>
+    <button data-filter="soviet_style"><span class="icon">🖥️</span> Советский стиль</button>
+    <button data-filter="custom" class="span-2"><span class="icon">✍️</span> Свой промпт</button>
+  </div>
+</section>
+
+<section id="page-info" class="hidden">
+  <div class="grid">
+    <button id="back-info" class="span-2"><span class="icon">⬅️</span> Назад</button>
+  </div>
+
+  <div class="info-wrap">
+    <h3>🧠 Нейро-образы — выбери стиль для генерации!</h3>
+    <p>После обучения агента по твоим 25 фото ты сможешь создавать изображения <strong>с твоим лицом</strong> в разных стилях. Вот что доступно:</p>
+    <p>👑 <strong>Мужской якутский костюм</strong> — традиционный национальный образ (для парней).<br>
+       👸 <strong>Женский якутский костюм</strong> — красивый этнический наряд (для девушек).<br>
+       💰 <strong>Миллиардер Vibe</strong> — роскошь, стиль, яхты и статус.<br>
+       🏖 <strong>На пляже</strong> — летняя атмосфера и релакс.<br>
+       📸 <strong>Фотосессия</strong> — студийный портрет, как в модном журнале.<br>
+       🖼 <strong>Портрет</strong> — классический художественный стиль.<br>
+       👶 <strong>Ребёнок</strong> — генерация с твоим лицом в образе ребёнка.</p>
+    <p><em>Начни с создания агента — мы обучим нейросеть, и ты сможешь выбирать любой стиль!</em></p>
+  </div>
+</section>
+
+<section id="page-help" class="hidden">
+  <div class="grid">
+    <button id="back-help" class="span-2"><span class="icon">⬅️</span> Назад</button>
+  </div>
+
+  <div class="info-wrap">
+    <h3>📘 Помощь</h3>
+
+    <p>Добро пожаловать в <strong>Saga AI</strong> — нейросетевой бот, который создаёт персонального агента по твоим фотографиям и генерирует стильные образы с твоим лицом 💫</p>
+
+    <p>🔧 <strong>Как всё работает?</strong><br>
+       1. Загрузуй <strong>25 фото лица</strong> (кнопка «Создать агента»).<br>
+       2. Мы обучим нейросеть на твоём лице — это займёт немного времени.<br>
+       3. Выбирай любой фильтр и получай реалистичные изображения с собой.</p>
+
+    <p>🎨 <strong>Какие стили доступны?</strong><br>
+       👸 Женский якутский костюм (для девушек)<br>
+       👑 Мужской якутский костюм (для парней)<br>
+       💰 Миллиардер Vibe<br>
+       🏖 На пляже<br>
+       📸 Фотосессия<br>
+       🖼 Портрет<br>
+       👶 Ребёнок</p>
+
+    <p>💳 <strong>Как работает баланс?</strong><br>
+       • Каждая генерация — минус 1 баланс.<br>
+       • Пополнить можно через кнопку в меню.</p>
+
+    <p>📷 <strong>Как получить лучший результат?</strong><br>
+       • Загружай чёткие фото с лицом, без сильных фильтров.</p>
+
+    <p>❓ <strong>Нужна помощь?</strong><br>
+       Напиши в поддержку: <a href="https://t.me/saga_ai" target="_blank">@saga_ai</a></p>
+
+    <p>🧠 Разработчик бота: <a href="https://t.me/VLAADOS1" target="_blank">@VLAADOS1</a></p>
+  </div>
+</section>
+
+<script>
+if (window.Telegram && Telegram.WebApp){
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+}
+
+const $     = s => document.querySelector(s);
+const show  = el => el.classList.remove('hidden');
+const hide  = el => el.classList.add('hidden');
+
+const pageMain    = $('#page-main');
+const pageFilters = $('#page-filters');
+const pageInfo    = $('#page-info');
+const pageHelp    = $('#page-help');
+
+function send(action, payload = {}){
+  const data = JSON.stringify({ action, ...payload });
+  if (Telegram.WebApp){
+    Telegram.WebApp.sendData(data);
+  } else {
+    console.log('DEBUG', data);
+    alert('DEBUG ' + data);
+  }
+}
+
+$('#btnPhoto').onclick        = () => { hide(pageMain); show(pageFilters); };
+$('#btnVideo').onclick        = () => send('create_video');
+
+$('#btnAgent').onclick        = () => send('create_agent');
+$('#btnClothes').onclick      = () => window.location.href = 'main.html';
+$('#btnSwitchAgent').onclick  = () => send('change_agent');
+
+$('#btnFilters').onclick      = () => { hide(pageMain); show(pageInfo); };
+$('#btnBalance').onclick      = () => send('balance');
+$('#btnBuy').onclick          = () => send('buy_generations');
+
+$('#btnHelp').onclick         = () => { hide(pageMain); show(pageHelp); };
+
+$('#back-filters').onclick    = () => { show(pageMain); hide(pageFilters); };
+$('#back-info').onclick       = () => { show(pageMain); hide(pageInfo); };
+$('#back-help').onclick       = () => { show(pageMain); hide(pageHelp); };
+
+pageFilters.querySelectorAll('button[data-filter]').forEach(btn => {
+  btn.onclick = () => {
+    send('generate_photo', { filter: btn.dataset.filter });
+    show(pageMain); hide(pageFilters);
+  };
+});
+</script>
+</body>
+</html>

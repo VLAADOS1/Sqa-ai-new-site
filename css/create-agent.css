@@ -1,0 +1,191 @@
+* {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    font-family: "Inter";
+}
+
+body {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 300ms;
+}
+
+a {
+    text-decoration: none;
+}
+
+.wrapper {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    max-width: 360px;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.settings-info {
+    display: flex;
+    justify-content: flex-start;
+    margin-right: auto;
+    width: auto; 
+}
+
+.settings-back-btn {
+    width: 30px;
+    height: 30px;
+    background: #F3F5F6;
+    display: flex;    
+    align-items: center;   
+    justify-content: center;
+    border-radius: 7px;
+    padding: 0;        
+    border: none;       
+    cursor: pointer;     
+    transition: 300ms;
+    margin-right: 10px;
+}
+
+.settings-back-icon {
+    display: flex;       
+    align-items: center;
+    justify-content: center;
+    color: #1B2128;
+    transition: 300ms;
+}
+
+.settings-back-icon svg {
+    display: block;
+}
+
+.settings-back-btn:hover {
+    background: #1B2128;
+    transform: translateX(-5%);
+}
+
+.settings-back-btn:hover .settings-back-icon {
+    color: #fff;
+    transform: translateX(-15%);
+}
+
+.settings-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1B2128;
+}
+
+.settings-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: #728A96;
+    margin-top: 5px;
+    max-width: 360px;
+}
+
+.agent-image-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.agent-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    width: 360px;
+    height: 360px;
+}
+
+.photo-text-container {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    background: #FFFFFF;
+    padding: 12px 15px;
+    border-radius: 12px;
+    color: #000;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.photo-icon {
+    display: flex;
+    align-items: center;
+}
+
+.photo-icon svg {
+    color: #000;
+}
+
+.photo-text {
+    margin: 0 0 0 5px;
+    font-size: 14px;
+}
+
+.selected-text {
+    color: #10A37F;
+}
+
+.agent-btns {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.create-agent {
+    background: #10A37F;
+    padding: 16px;
+    text-align: center;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 300ms;
+}
+
+.create-agent:hover {
+    transform: translateY(-3%);
+    box-shadow: 0px 5px 30px #10a37e6e;
+}
+
+.change-agent {
+    background: #F3F5F6;
+    padding: 16px;
+    border-radius: 12px;
+    color: #728A96;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 300ms;
+    text-align: center;
+}
+
+.change-agent:hover {
+    transform: translateY(-3%);
+    box-shadow: 0px 5px 30px #1b21283b;
+}
+
+.anime-item {
+  opacity: 0;
+  visibility: hidden;
+  transition: 
+    opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(20%) scale(0.9);
+}
+
+.anime-item.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}

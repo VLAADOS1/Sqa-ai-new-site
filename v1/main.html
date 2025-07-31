@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Каталог Saqa-AI</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--frame:rgb(13,187,147);--bg-1:#000;--bg-2:#0e0e11;--accent:#2e90ff;--brand:var(--frame);--text:#fff;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none}
+body{font-family:'Inter',sans-serif;color:var(--text);background:linear-gradient(160deg,#000 0%,#151515 100%);min-height:100vh;overflow:hidden;position:relative;}
+body::before{content:'';position:fixed;inset:12px;border:2px solid var(--frame);border-radius:24px;pointer-events:none;z-index:999;box-shadow:0 0 6px 1px rgba(13,187,147,.75),0 0 14px 4px rgba(13,187,147,.45),0 0 22px 10px rgba(13,187,147,.25);}
+.frame-inner{height:calc(100vh - 24px);margin:12px;border-radius:24px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.header{text-align:center;padding:28px 20px 12px}.brand{display:flex;justify-content:center;align-items:center;margin-bottom:4px}
+.brand img{height:40px;width:auto;display:block}
+.switch{margin-top:18px;display:flex;justify-content:center;gap:10px}
+.switch button{flex:0 0 110px;padding:10px 0;font-size:15px;font-weight:600;border-radius:30px;border:2px solid var(--brand);background:transparent;color:var(--brand);cursor:pointer;transition:.3s;}
+.switch button.active{background:var(--brand);color:#000}
+h2{font-size:22px;font-weight:600;margin:24px 20px 16px}
+.carousel{display:flex;gap:14px;padding:0 20px 8px;overflow-x:auto;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.card{position:relative;flex:0 0 auto;scroll-snap-align:center;width:clamp(96px,34vw,136px);aspect-ratio:2/3;background:var(--bg-2);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .35s cubic-bezier(.2,.6,.3,1);}
+.card img{width:100%;height:100%;object-fit:cover}
+.card::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.3);opacity:0;transition:opacity .35s;pointer-events:none;}
+.card:hover{transform:scale(1.05)}.card:hover::after{opacity:1}
+.modal{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:.35s;z-index:998;padding:20px;}
+.modal.active{opacity:1;visibility:visible}
+.modal-box{position:relative;background:var(--bg-2);border-radius:22px;padding:20px;max-width:600px;width:100%;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.close{position:absolute;top:22px;right:26px;font-size:28px;font-weight:600;color:#fff;cursor:pointer}
+.modal-box img{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:16px}
+.btn{width:100%;padding:14px 28px;background:var(--accent);border:none;border-radius:10px;font-size:16px;font-weight:600;color:#fff;cursor:pointer;transition:background .3s;}
+.btn:hover{background:#1877ff}
+/* draw-mode, gender-sections — без изменений */
+.instructions{font-size:17px;font-weight:600;color:var(--brand);text-align:center;margin-bottom:12px;user-select:none;}
+.draw-box{position:relative;width:100%}
+.draw-box img{
+  width:100%;
+  border-radius:16px
+}
+.draw-box canvas{position:absolute;top:0;left:0;border-radius:16px;touch-action:none}
+#drawModal .close{display:none}
+.tool-toggle{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.3s;}
+.tool-toggle:hover{background:rgba(0,0,0,.5)}
+.tool-toggle svg{width:22px;height:22px;fill:#fff}
+.gender-section{display:none}
+.gender-section.active{display:block}
+
+.modal-box{max-height:90vh;overflow-y:auto;}
+#modalContent{display:flex;flex-direction:column;align-items:center;gap:20px;}
+.modal-box img,.draw-box img{display:block;width:auto;max-width:100%;max-height:70vh;height:auto;object-fit:contain;aspect-ratio:auto;}
+
+.back-btn{
+  position:fixed;
+  top:26px;               
+  left:26px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:10px 18px;
+  font:600 15px 'Inter', sans-serif;
+  color:var(--brand);
+  background:rgba(0,0,0,.35);
+  border:2px solid var(--brand);
+  border-radius:14px;
+  backdrop-filter:blur(4px);
+  cursor:pointer;
+  z-index:1000;           
+  transition:.3s;
+}
+.back-btn svg{
+  width:18px;
+  height:18px;
+  fill:currentColor;
+  transform:translateX(-2px);      
+}
+.back-btn:hover{
+  background:var(--brand);
+  color:#000;
+  transform:translateY(-2px);     
+}
+</style>
+</head>
+
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M15 18l-6-6 6-6"/>
+  </svg>
+  Назад
+</button>
+<div class="frame-inner">
+<header class="header">
+  <div class="brand"><img src="https://i.postimg.cc/ZRt8Kz5c/d99041e4-02c1-4b6c-bb6a-eb7c6a595d10.png" alt="Saqa AI"></div>
+  <div class="switch">
+    <button class="gender-btn active" data-target="female">Женское</button>
+    <button class="gender-btn" data-target="male">Мужское</button>
+  </div>
+</header>
+
+<section id="female" class="gender-section active">
+  <h2>Костюмы</h2>
+  <div class="carousel">
+    <div class="card"><img src="https://i.postimg.cc/Qdypmpm9/Chat-GPT-Image-30-2025-15-28-18.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/J0wKwQXg/Chat-GPT-Image-1-2025-21-18-52.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/rmYX53v4/Chat-GPT-Image-1-2025-21-20-02.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/XvP6CTMC/Chat-GPT-Image-1-2025-21-20-29.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/kXJY7fz3/Chat-GPT-Image-1-2025-21-20-47.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/WbZzbwk8/Chat-GPT-Image-1-2025-21-21-19.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/rmts01Hq/Chat-GPT-Image-1-2025-21-22-01.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/KjGXSFBC/Chat-GPT-Image-1-2025-21-22-30.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/Kv1qKRGJ/Chat-GPT-Image-1-2025-21-22-52.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/0r1w2W2g/Chat-GPT-Image-1-2025-21-23-08.png" alt=""></div>
+  </div>
+  <h2>Платья</h2>
+  <div class="carousel">
+    <div class="card"><img src="https://i.postimg.cc/MK0t8jqL/Chat-GPT-Image-1-2025-21-25-12.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/rFyRKd53/Chat-GPT-Image-1-2025-21-25-35.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/3RBJTBfR/Chat-GPT-Image-1-2025-21-25-55.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/CK4VBKGr/Chat-GPT-Image-1-2025-21-26-15.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/859DD0BT/Chat-GPT-Image-1-2025-21-26-33.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/W3rYFYcN/Chat-GPT-Image-1-2025-21-26-48.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/SKbMQgd7/Chat-GPT-Image-1-2025-21-27-03.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/QdmFsjBs/Chat-GPT-Image-1-2025-21-27-19.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/FK1H435g/Chat-GPT-Image-1-2025-21-27-33.png" alt=""></div>
+  </div>
+  <h2>Трикотаж</h2>
+  <div class="carousel">
+    <div class="card"><img src="https://i.postimg.cc/j50242mH/Chat-GPT-Image-1-2025-21-29-08.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/bvXpKMg8/Chat-GPT-Image-1-2025-21-30-02.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/1z51hQFk/Chat-GPT-Image-1-2025-21-30-16.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/wxFJg5nn/Chat-GPT-Image-1-2025-21-30-31.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/26Gqjm9n/Chat-GPT-Image-1-2025-21-30-43.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/NFWQBzt1/Chat-GPT-Image-1-2025-21-31-03.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/yNd6h9L3/Chat-GPT-Image-1-2025-21-31-18.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/y8XX3JdZ/Chat-GPT-Image-1-2025-21-34-44.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/SKzXzRmh/Chat-GPT-Image-1-2025-21-45-11.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/x86WKK2p/Chat-GPT-Image-1-2025-21-57-21.png" alt=""></div>
+  </div>
+  <h2>Верхняя одежда</h2>
+  <div class="carousel">
+    <div class="card"><img src="https://i.postimg.cc/4yFF2dqR/Chat-GPT-Image-3-2025-11-05-20.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/1Xk5h9Vb/Chat-GPT-Image-3-2025-11-07-11.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/y8XpwsD5/Chat-GPT-Image-3-2025-11-07-43.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/gk9Wpc0k/Chat-GPT-Image-3-2025-11-08-54.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/8cZMhXcZ/Chat-GPT-Image-3-2025-11-09-33.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/rmCPLTZz/Chat-GPT-Image-3-2025-11-10-30.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/Pq6Mbq7W/Chat-GPT-Image-3-2025-11-11-04.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/5tjsRvL7/Chat-GPT-Image-3-2025-11-11-46.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/SxGKvYkM/Chat-GPT-Image-3-2025-11-12-31.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/sgKhZNBq/Chat-GPT-Image-3-2025-11-13-09.png" alt=""></div>
+  </div>
+</section>
+
+<section id="male" class="gender-section">
+  <h2>Костюмы</h2>
+  <div class="carousel">
+    <div class="card"><img src="https://i.postimg.cc/Z0ttLmRc/Chat-GPT-Image-3-2025-11-20-46.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/tgkYYSTJ/Chat-GPT-Image-3-2025-11-24-09.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/L432RYJ4/Chat-GPT-Image-3-2025-11-24-55.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/BZrwLCtc/Chat-GPT-Image-3-2025-11-27-12.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/852QCQqL/Chat-GPT-Image-3-2025-11-27-44.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/PNGt08Xs/Chat-GPT-Image-3-2025-11-28-36.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/tgpyHjFf/Chat-GPT-Image-3-2025-11-34-29.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/FRmKG6rb/Chat-GPT-Image-3-2025-11-36-05.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/NF6SDN0X/Chat-GPT-Image-3-2025-11-36-39.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/76dJ9VRq/Chat-GPT-Image-3-2025-11-37-24.png" alt=""></div>
+  </div>
+  <h2>Рубашки и поло</h2>
+  <div class="carousel">
+    <div class="card"><img src="https://i.postimg.cc/d1DL7VF7/Chat-GPT-Image-3-2025-12-01-55.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/d1mJn7YN/Chat-GPT-Image-3-2025-12-02-34.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/ZR01vCqy/Chat-GPT-Image-3-2025-12-03-11.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/Kvs3tWQk/Chat-GPT-Image-3-2025-12-03-44.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/y8pq1m1z/Chat-GPT-Image-3-2025-12-04-25.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/02JKdf4V/Chat-GPT-Image-3-2025-12-04-57.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/3RFQHPWt/Chat-GPT-Image-3-2025-12-05-27.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/2ydQG7cb/Chat-GPT-Image-3-2025-12-06-02.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/Znm7JRXN/Chat-GPT-Image-3-2025-12-06-34.png" alt=""></div>
+  </div>
+  <h2>Верхняя одежда</h2>
+  <div class="carousel">
+    <div class="card"><img src="https://i.postimg.cc/GhTfv41k/Chat-GPT-Image-3-2025-12-11-21.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/L8X3j7PG/Chat-GPT-Image-3-2025-12-11-59.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/W3bN4MCm/Chat-GPT-Image-3-2025-12-12-30.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/vHm0vcFP/Chat-GPT-Image-3-2025-12-13-02.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/d1HyQQH1/Chat-GPT-Image-3-2025-12-13-35.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/MHHrXTzr/Chat-GPT-Image-3-2025-12-14-08.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/Hk6z8mPq/Chat-GPT-Image-3-2025-12-14-41.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/Bn2sJhYP/Chat-GPT-Image-3-2025-12-15-11.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/RhTsPHXF/Chat-GPT-Image-3-2025-12-15-42.png" alt=""></div>
+    <div class="card"><img src="https://i.postimg.cc/VNRJksGt/Chat-GPT-Image-3-2025-12-16-14.png" alt=""></div>
+  </div>
+</section>
+
+<div class="modal" id="modal"><div class="modal-box"><span class="close" id="closeBtn">&times;</span><div id="modalContent"><img id="modalImg" src="" alt=""><button class="btn" id="chooseBtn">Выбрать</button></div></div></div>
+<div class="modal" id="drawModal"><div class="modal-box"><div id="drawContent"></div></div></div>
+<input type="file" accept="image/*" id="photoInput" style="display:none"/>
+</div>
+
+<script>
+if (window.Telegram?.WebApp){
+  Telegram.WebApp.ready();
+  Telegram.WebApp.expand();
+}
+
+const modal      = document.getElementById('modal'),
+      modalImg   = document.getElementById('modalImg'),
+      closeBtn   = document.getElementById('closeBtn'),
+      chooseBtn  = document.getElementById('chooseBtn');
+
+const drawModal  = document.getElementById('drawModal'),
+      drawContent= document.getElementById('drawContent'),
+      photoInput = document.getElementById('photoInput');
+
+let selectedOutfit = null,
+    selectedGender = null;
+
+let userPhoto     = null,
+    userPhotoFile = null,
+    maskImage     = null;
+
+async function uploadFile(fileOrBlob, name){
+  const endpoints = [
+    { url:'https://tmpfiles.org/api/v1/upload', field:'file',
+      pick:r=>r?.data?.url || r?.url },
+    { url:'https://uguu.se/upload',             field:'files[]',
+      pick:r=>Array.isArray(r) ? r[0]?.url : r?.url },
+  ];
+  for (const ep of endpoints){
+    try{
+      const fd = new FormData();
+      fd.append(ep.field, fileOrBlob, name);
+      const res = await fetch(ep.url, { method:'POST', body:fd });
+      if(!res.ok) throw new Error(res.status);
+      const data = JSON.parse(await res.text());
+      const link = ep.pick(data);
+      if(link) return link.trim();
+      throw new Error('no link in response');
+    }catch(e){
+    }
+  }
+  throw new Error('all uploads failed');
+}
+
+document.querySelectorAll('#female .card').forEach((c,i)=>c.dataset.id=i+1);
+document.querySelectorAll('#male   .card').forEach((c,i)=>c.dataset.id=i+1);
+
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    selectedOutfit = card.dataset.id;
+    selectedGender = card.closest('section').id;
+    modalImg.src   = card.querySelector('img').src;
+    modal.classList.add('active');
+  });
+});
+
+const closeModal = () => modal.classList.remove('active');
+closeBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if(e.target===modal) closeModal(); });
+
+chooseBtn.addEventListener('click', () => photoInput.click());
+photoInput.addEventListener('change', e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  userPhotoFile = file;
+  const rd = new FileReader();
+  rd.onload = ev =>{
+    userPhoto = ev.target.result;
+    closeModal();
+    drawMode(userPhoto);
+  };
+  rd.readAsDataURL(file);
+});
+
+const closeDrawModal = () => drawModal.classList.remove('active');
+drawModal.addEventListener('click', e => { if(e.target===drawModal) closeDrawModal(); });
+
+function sendToBot(payload){
+  Telegram.WebApp.sendData(JSON.stringify(payload));
+}
+
+function drawMode(imgSrc){
+  drawContent.innerHTML = '';
+  const info = document.createElement('div');
+  info.className = 'instructions';
+  info.textContent = 'Выделите область одежды, которую хотите заменить.';
+  drawContent.append(info);
+
+  const box = document.createElement('div');
+  box.className = 'draw-box';
+  const img = document.createElement('img');
+  img.src = imgSrc;
+  const cv  = document.createElement('canvas');
+  box.append(img,cv);
+  drawContent.append(box);
+
+  const toolBtn = document.createElement('button');
+  toolBtn.className='tool-toggle';
+  const icons = {
+    eraser:`<svg viewBox="0 0 24 24"><path d="M16.24 3.56a2.5 2.5 0 0 1 3.54 0l.66.66a2.5 2.5 0 0 1 0 3.54l-9.19 9.19-4.24-4.24 9.23-9.15zm-10.95 8.45 4.24 4.24-3.9 3.9a2.5 2.5 0 0 1-3.54 0l-.66-.66a2.5 2.5 0 0 1 0-3.54l3.86-3.94zm5.66 7.07h8v2h-8z"/></svg>`,
+    pencil:`<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75l11.02-11.03-3.75-3.75L3 17.25zm14.81-10.12 2.06-2.06c.39-.39.39-1.02 0-1.41l-1.53-1.53a.996.996 0 0 0-1.41 0l-2.06 2.06 2.94 2.94z"/></svg>`
+  };
+  let isEraser=false;
+  toolBtn.innerHTML=icons.eraser;
+  toolBtn.addEventListener('click',()=>{
+    isEraser=!isEraser;
+    toolBtn.innerHTML=isEraser?icons.pencil:icons.eraser;
+  });
+  box.append(toolBtn);
+
+  const done=document.createElement('button');
+  done.textContent='Готово';
+  done.className='btn';
+  done.style.marginTop='16px';
+  drawContent.append(done);
+
+  img.onload=()=>{
+    const dpr=window.devicePixelRatio||1;
+    cv.width = img.clientWidth*dpr;
+    cv.height= img.clientHeight*dpr;
+    cv.style.width = img.clientWidth+'px';
+    cv.style.height= img.clientHeight+'px';
+    const ctx=cv.getContext('2d');
+    ctx.scale(dpr,dpr);
+    initDrawing(cv,ctx);
+  };
+
+  done.addEventListener('click', async ()=>{
+    maskImage = makeMask(cv, img.naturalWidth, img.naturalHeight);
+    drawContent.innerHTML = '<div class="instructions">Загружаем…</div>';
+
+    try{
+      const photoUrl = await uploadFile(
+        userPhotoFile,
+        'photo_'+Date.now()+'.png'
+      );
+      const maskBlob = await (await fetch(maskImage)).blob();
+      const maskUrl  = await uploadFile(
+        maskBlob,
+        'mask_'+Date.now()+'.png'
+      );
+      sendToBot({
+        outfit:Number(selectedOutfit),
+        gender:selectedGender,
+        photo: photoUrl,
+        mask:  maskUrl
+      });
+      drawContent.innerHTML =
+        '<div class="instructions">✅ Отправлено в бота!</div>';
+    }catch(err){
+      drawContent.innerHTML =
+        '<div class="instructions" style="color:#f55">Ошибка загрузки</div>';
+    }
+  });
+
+function makeMask(srcCanvas, natW, natH){
+  const m = document.createElement('canvas');
+  m.width  = natW;
+  m.height = natH;
+  const mCtx = m.getContext('2d');
+
+  mCtx.drawImage(srcCanvas, 0, 0, natW, natH);
+
+  const imgData = mCtx.getImageData(0, 0, natW, natH);
+  const data = imgData.data;
+  for (let i = 0; i < data.length; i += 4){
+    const on = data[i + 3] > 0;       
+    // const val = on ? 255 : 0;
+    const val = on ? 0 : 255;
+    data[i] = data[i+1] = data[i+2] = val;
+    data[i+3] = 255;
+  }
+  mCtx.putImageData(imgData, 0, 0);
+
+  return m.toDataURL('image/png');
+}
+
+
+  function initDrawing(cv,ctx){
+    const COLOR='rgba(128,0,255,0.5)', WIDTH=40;
+    ctx.lineWidth=WIDTH;
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    let drawing=false, prev=null;
+    const pos=e=>{
+      const r=cv.getBoundingClientRect();
+      const p=e.touches?e.touches[0]:e;
+      return {x:p.clientX-r.left, y:p.clientY-r.top};
+    };
+    const start=e=>{e.preventDefault(); drawing=true; prev=pos(e);};
+    const move=e=>{
+      if(!drawing) return;
+      e.preventDefault();
+      const curr=pos(e);
+      if(isEraser){
+        ctx.save();
+        ctx.globalCompositeOperation='destination-out';
+        ctx.beginPath();
+        ctx.moveTo(prev.x,prev.y);
+        ctx.lineTo(curr.x,curr.y);
+        ctx.stroke();
+        ctx.restore();
+      }else{
+        ctx.save();
+        ctx.globalCompositeOperation='destination-out';
+        ctx.beginPath();
+        ctx.moveTo(prev.x,prev.y);
+        ctx.lineTo(curr.x,curr.y);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalCompositeOperation='source-over';
+        ctx.strokeStyle=COLOR;
+        ctx.beginPath();
+        ctx.moveTo(prev.x,prev.y);
+        ctx.lineTo(curr.x,curr.y);
+        ctx.stroke();
+        ctx.restore();
+      }
+      prev=curr;
+    };
+    const stop=()=>{drawing=false; prev=null;};
+    cv.addEventListener('mousedown',start);
+    cv.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',stop);
+    cv.addEventListener('mouseout',stop);
+    cv.addEventListener('touchstart',start,{passive:false});
+    cv.addEventListener('touchmove',move,{passive:false});
+    window.addEventListener('touchend',stop);
+  }
+
+  drawModal.classList.add('active');
+}
+
+const genderBtns=document.querySelectorAll('.gender-btn');
+const sections = {
+  female: document.getElementById('female'),
+  male:   document.getElementById('male')
+};
+genderBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    genderBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const t=btn.dataset.target;
+    Object.keys(sections).forEach(k=>{
+      sections[k].classList.toggle('active',k===t);
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+body {
+    background: #0B0D10;
+}
+
+.settings-back-btn {
+    background: #0F1317;
+}
+
+.settings-back-icon {
+    color: #fff;
+}
+
+.settings-title {
+    color: #fff;
+}
+
+.price-panel {
+    border: 1px solid #1B212880;
+}
+
+.price-text {
+    color: #fff;
+}
+
+.my-balance-panel {
+    border: 1px solid #1B212880;
+}
+
+.my-balance-nun {
+    color: #fff;
+}

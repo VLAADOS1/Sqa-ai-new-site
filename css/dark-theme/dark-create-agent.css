@@ -1,0 +1,51 @@
+body {
+    background: #0B0D10;
+}
+
+.settings-back-btn {
+    background: #0F1317;
+}
+
+.settings-back-icon {
+    color: #fff;
+}
+
+.settings-title {
+    color: #fff;
+}
+
+.price-panel {
+    border: 1px solid #1B212880;
+}
+
+.price-text {
+    color: #fff;
+}
+
+.my-balance-panel {
+    border: 1px solid #1B212880;
+}
+
+.my-balance-nun {
+    color: #fff;
+}
+
+.photo-text-container {
+    background: #1E252C;
+}
+
+.photo-icon svg {
+    color: #fff;
+}
+
+.photo-text {
+    color: #fff;
+}
+
+.change-agent {
+    background: #0F1317;
+}
+
+.change-agent:hover {
+    box-shadow: 0px 5px 30px #10a37e11;
+}

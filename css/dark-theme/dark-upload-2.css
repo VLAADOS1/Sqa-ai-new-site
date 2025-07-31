@@ -1,0 +1,78 @@
+body {
+    background: #0B0D10;
+}
+
+.banner {
+    background: #0F1317;
+}
+
+.settings-back-btn {
+    background: #0F1317;
+}
+
+.settings-back-icon {
+    color: #fff;
+}
+
+.settings-title {
+    color: #fff;
+}
+
+.setting-btn {
+    color: #fff;
+    border: 1px solid #1B212880;
+}
+
+.theme-btn {
+    background: #1E252C;
+}
+
+.setting-btn:hover {
+    background: #101418;
+}
+
+.text-frame {
+    display: flex;
+    padding: 24px;
+    width: 320px;
+    height: 270px;
+    border-radius: 12px;
+    font-weight: 400;
+    background: #7698BB0D;
+    border: 1px solid #7698BB0D;
+    position: relative;
+    transition: border-color 0.3s, color 0.3s;
+    outline: none;
+
+    overflow: auto;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.text-frame:focus {
+    border-color: #10A37F;
+}
+
+.text-frame:not(:empty) {
+    color: #fff;
+}
+
+.select-btn {
+    background: #10A37F;
+}
+
+.select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border-radius: 12px;
+    background: #10A37F;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 300ms;
+}

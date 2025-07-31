@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/select-filters.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Saqa.AI - Выбор фильтра</title>
+</head>
+<body>
+    <div class="wrapper">
+        <main class="main">
+            <div class="settings-container">
+                <div class="settings-info">
+                    <a href="/pages/navigations.html" class="settings-back-btn">
+                        <div class="settings-back-icon">
+                            <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5.25006 8.5L1.75006 5L5.25006 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="setting-text-container">
+                        <h1 class="settings-title anime-item">Выберите фильтр</h1>
+                        <p class="settings-text anime-item">Выбирай стиль. Меняй атмосферу — одним касанием.</p>
+                    </div>
+                </div>
+                <div class="select-gender-container">
+                    <button class="gender-btn active anime-item" data-gender="girl">Для девушек</button>
+                    <button class="gender-btn anime-item" data-gender="man">Для мужчин</button>
+                    <div class="gender-slider anime-item"></div>
+                </div>
+                <div class="settings-btn-container">
+                    <div class="settings-gender anime-item active" id="girl">
+                        <div class="setting-btn" id="btn1">
+                            <p class="setting-text">Якутский костюм</p>
+                            <div class="hidden-text">
+                                Традиционный якутский костюм с национальными узорами и аксессуарами
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn2">
+                            <p class="setting-text">Миллиардер Vibe</p>
+                            <div class="hidden-text">
+                                Стиль успешного бизнесмена с дорогими аксессуарами и роскошным фоном
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn3">
+                            <p class="setting-text">На пляже</p>
+                            <div class="hidden-text">
+                                Расслабляющая атмосфера пляжа с пальмами и кристально чистой водой
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn4">
+                            <p class="setting-text">Фотоссесия</p>
+                            <div class="hidden-text">
+                                Профессиональная фотосессия с качественным светом и реквизитом
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn5">
+                            <p class="setting-text">Портрет</p>
+                            <div class="hidden-text">
+                                Художественный портрет с акцентом на лицо и эмоции
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn6">
+                            <p class="setting-text">Ребенок</p>
+                            <div class="hidden-text">
+                                Милые и забавные фильтры специально для детских фотографий
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn7">
+                            <p class="setting-text">Дух природы</p>
+                            <div class="hidden-text">
+                                Мистические элементы природы: цветы, листья и природные текстуры
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn8">
+                            <p class="setting-text">Боец UFC</p>
+                            <div class="hidden-text">
+                                Эффектный образ профессионального бойца с атрибутами MMA
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn9">
+                            <p class="setting-text">Советский стиль</p>
+                            <div class="hidden-text">
+                                Ностальгические фильтры в стиле советской эпохи
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn10">
+                            <p class="setting-text">Я, но другого пола</p>
+                            <div class="hidden-text">
+                                Забавный фильтр, который показывает, как вы выглядели бы противоположного пола
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-gender anime-item" id="man">
+                        <div class="setting-btn" id="btn11">
+                            <p class="setting-text">Якутский костюм</p>
+                            <div class="hidden-text">
+                                Традиционный якутский костюм с национальными узорами и аксессуарами
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn12">
+                            <p class="setting-text">Миллиардер Vibe</p>
+                            <div class="hidden-text">
+                                Стиль успешного бизнесмена с дорогими аксессуарами и роскошным фоном
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn13">
+                            <p class="setting-text">На пляже</p>
+                            <div class="hidden-text">
+                                Расслабляющая атмосфера пляжа с пальмами и кристально чистой водой
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn14">
+                            <p class="setting-text">Фотоссесия</p>
+                            <div class="hidden-text">
+                                Профессиональная фотосессия с качественным светом и реквизитом
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn15">
+                            <p class="setting-text">Портрет</p>
+                            <div class="hidden-text">
+                                Художественный портрет с акцентом на лицо и эмоции
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn16">
+                            <p class="setting-text">Ребенок</p>
+                            <div class="hidden-text">
+                                Милые и забавные фильтры специально для детских фотографий
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn17">
+                            <p class="setting-text">Дух природы</p>
+                            <div class="hidden-text">
+                                Мистические элементы природы: цветы, листья и природные текстуры
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn18">
+                            <p class="setting-text">Боец UFC</p>
+                            <div class="hidden-text">
+                                Эффектный образ профессионального бойца с атрибутами MMA
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn19">
+                            <p class="setting-text">Советский стиль</p>
+                            <div class="hidden-text">
+                                Ностальгические фильтры в стиле советской эпохи
+                            </div>
+                        </div>
+                        <div class="setting-btn" id="btn20">
+                            <p class="setting-text">Я, но другого пола</p>
+                            <div class="hidden-text">
+                                Забавный фильтр, который показывает, как вы выглядели бы противоположного пола
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/js/theme-switcher.js"></script>
+    <script src="/js/animation.js"></script>
+    <script src="/js/gender-switch.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/background-show.js"></script>
+    <script src="/js/webapp.js"></script>
+
+</body>
+</html>

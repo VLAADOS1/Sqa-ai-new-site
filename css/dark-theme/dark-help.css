@@ -1,0 +1,56 @@
+body {
+    background: #0B0D10;
+}
+
+.settings-back-btn {
+    background: #0F1317;
+}
+
+.settings-back-icon {
+    color: #fff;
+}
+
+.settings-title {
+    color: #fff;
+}
+
+.help-container {
+    margin-top: 25px;
+    border: none !important;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+}
+
+.help-btn:nth-child(3) {
+    grid-column: span 2;
+}
+
+.help-btn {
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #1B212880;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 500ms;
+    background: #141a2005;
+}
+
+.help-btn:hover {
+    transform: scale(.97);
+}
+
+.help-btn-text {
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+.help-btn-icon {
+    width: 132px;
+    height: 132px;
+}

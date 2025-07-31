@@ -1,0 +1,45 @@
+body {
+    background: #0B0D10;
+}
+
+.settings-back-btn {
+    background: #0F1317;
+}
+
+.settings-back-icon {
+    color: #fff;
+}
+
+.settings-title {
+    color: #fff;
+}
+
+.help-container {
+    margin-top: 25px;
+    border: 1px solid #7698BB26;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+.help-title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.help-icon {
+    color: #fff;
+    margin-right: 10px;
+}
+
+.help-title {
+    font-size: 14px;
+    color: #fff;
+}
+
+.help-text {
+    color: #6C7F89;
+    max-width: 315px;
+    font-size: 12px;
+    font-weight: 400;
+}

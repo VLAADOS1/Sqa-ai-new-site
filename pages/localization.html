@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/localization.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <title>Saqa.AI - Выбор языка интерфейса</title>
+</head>
+<body>
+    <div class="wrapper">
+        <main class="main">
+            <div class="settings-info">
+                <a href="/pages/navigations.html" class="settings-back-btn">
+                    <div class="settings-back-icon">
+                        <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.25006 8.5L1.75006 5L5.25006 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </a>
+                <div class="setting-text-container">
+                    <h1 class="settings-title anime-item" data-translate="settings-title">Выберите язык интерфейса</h1>
+                    <p class="settings-text anime-item" data-translate="settings-text">Выбери язык — и используй приложение так, как удобно.</p>
+                </div>
+            </div>
+            <div class="select-language-container anime-item">
+                <button class="language-btn active" data-lang="ru">Русский</button>
+                <button class="language-btn" data-lang="sah">Якутский</button>
+                <div class="language-slider anime-item"></div>
+            </div>
+            <div class="localization-image-container anime-item">
+                <img src="/images/local-light.png" alt="" class="localization-image" id="light-example2">
+                <img src="/images/local.png" alt="" class="localization-image" id="dark-example2">
+            </div>
+        </main>
+    </div>
+    <script src="/js/main.js"></script>
+    <script src="/js/localization-anim.js"></script>
+    <script src="/js/theme-switcher.js"></script>
+    <script src="/js/animation.js"></script>
+</body>
+</html>
