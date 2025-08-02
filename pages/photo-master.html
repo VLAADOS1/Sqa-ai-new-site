@@ -133,7 +133,7 @@
           false
         );
         console.timeEnd('makeMask');
-        logStep('maskDataUrl generated', '…3331111113311');
+        logStep('maskDataUrl generated', '…1111113311');
         logStep('maskDataUrl generated', maskDataUrl?.substring(0, 80) + '…');
 
         /*---------- 2. Заливаем mask на сервер ----------*/
@@ -144,61 +144,73 @@
         logStep('mask uploaded', maskUrl);
 
         /*---------- 3. Читаем session/local storage ----------*/
-        const photoUrl  = sessionStorage.getItem('uploadedPhotoUrl') || null;
+        const photoUrl = sessionStorage.getItem('uploadedPhotoUrl');
         logStep('sessionStorage.uploadedPhotoUrl', photoUrl);
 
         const rawAction = sessionStorage.getItem('action');
         logStep('sessionStorage.action', rawAction);
-        const action    = rawAction && rawAction !== 'null' ? rawAction : null;
+        const action = rawAction && rawAction !== 'null' ? rawAction : null;
 
         const rawPrompt = sessionStorage.getItem('promptText');
         logStep('sessionStorage.promptText', rawPrompt);
-        const prompt    = rawPrompt && rawPrompt !== 'null' ? rawPrompt : null;
+        const prompt = rawPrompt && rawPrompt !== 'null' ? rawPrompt : null;
 
         const extra = {};
+
         const outfitIdx = localStorage.getItem('selectedOutfitIndex');
         logStep('localStorage.selectedOutfitIndex', outfitIdx);
-        const gender    = localStorage.getItem('selectedGender');
+        if (outfitIdx && outfitIdx !== 'null') {
+        extra.outfit = Number(outfitIdx);
+        }
+
+        const gender = localStorage.getItem('selectedGender');
         logStep('localStorage.selectedGender', gender);
+        if (gender && gender !== 'null') {
+        extra.gender = gender;
+        }
 
-        if (outfitIdx) extra.outfit = Number(outfitIdx);
-        if (gender)    extra.gender = gender;
-
-        /*---------- 4. Формируем payload и вызываем send() ----------*/
-        let payloadToSend;
+        // Проверка: если нет photoUrl или maskUrl, выходим
+        if (!photoUrl || typeof maskUrl === 'undefined' || maskUrl === null) {
+        logStep('Abort: Missing required photoUrl or maskUrl');
+        } else {
+        let payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
 
         if (action && prompt) {
-          payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
-          logStep('Branch: action && prompt', { action, prompt, payloadToSend });
+            logStep('Branch: action && prompt', { action, prompt, payloadToSend });
 
-          console.time('send(action, {data})');
-          send(action, { data: JSON.stringify(payloadToSend) });
-          console.timeEnd('send(action, {data})');
+            console.time('send(action, {data})');
+            send(action, { data: JSON.stringify(payloadToSend) });
+            console.timeEnd('send(action, {data})');
 
         } else if (action && !prompt) {
-          payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
-          logStep('Branch: action && !prompt', { action, payloadToSend });
+            logStep('Branch: action && !prompt', { action, payloadToSend });
 
-          console.time('send(action, {…})');
-          send(action, { ...extra, photo: photoUrl, mask: maskUrl });
-          console.timeEnd('send(action, {…})');
+            console.time('send(action, {...})');
+            send(action, { ...extra, photo: photoUrl, mask: maskUrl });
+            console.timeEnd('send(action, {...})');
 
         } else {
-          payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
-          logStep('Branch: !action', { payloadToSend });
+            logStep('Branch: !action', { payloadToSend });
 
-          console.time('send(null, {data})');
-          send(null, { data: JSON.stringify(payloadToSend) });
-          console.timeEnd('send(null, {data})');
+            console.time('send(null, {data})');
+            send(null, { data: JSON.stringify(payloadToSend) });
+            console.timeEnd('send(null, {data})');
+        }
         }
 
         logStep('Send completed OK');
+        localStorage.setItem('selectedGender', null);
+        localStorage.setItem('selectedOutfitIndex', null);
 
       } catch (err) {
         logStep('❌ ERROR in click handler', err);
+        localStorage.setItem('selectedGender', null);
+        localStorage.setItem('selectedOutfitIndex', null);
         console.error('Ошибка при обработке фото:', err);
         alert('Не удалось сохранить изображение. Попробуйте ещё раз.');
       } finally {
+        localStorage.setItem('selectedGender', null);
+        localStorage.setItem('selectedOutfitIndex', null);
         console.groupEnd();  //🖱️  save-btn clicked
       }
     });
