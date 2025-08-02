@@ -10,9 +10,11 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <title>Saqa.AI - Фото-мастерская</title>
 </head>
+
 <body>
   <div class="wrapper">
     <main class="main">
+      <!------------ Header / навигация ------------>
       <div class="settings-info">
         <a href="/pages/navigations.html" class="settings-back-btn">
           <div class="settings-back-icon">
@@ -29,12 +31,16 @@
           </p>
         </div>
       </div>
+
+      <!------------ Image preview & tools ------------>
       <div class="image-preview">
         <div class="my-image">
           <div class="card anime-item">
             <img src="/images/exxxiee2.jpg" alt="" id="original-image" />
             <canvas id="drawing-canvas"></canvas>
           </div>
+
+          <!------------ Tool-switcher ------------>
           <div class="tools anime-item">
             <div class="tools-bg active-tool" id="brush-tool">
               <img src="/images/icons/brush.png" alt="" class="tools-icon" />
@@ -44,6 +50,7 @@
             </div>
           </div>
         </div>
+
         <div class="select-btn-container anime-item">
           <button class="select-btn" id="save-btn">Готово</button>
         </div>
@@ -51,63 +58,152 @@
     </main>
   </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const dataUrl = sessionStorage.getItem('selectedImage');
-  const img = document.getElementById('original-image');
-  if (dataUrl) img.src = dataUrl;
-
-  img.onload = () => {
-    const canvas = document.getElementById('drawing-canvas');
-    canvas.width  = img.naturalWidth;
-    canvas.height = img.naturalHeight;
-    canvas.style.width  = img.width  + 'px';
-    canvas.style.height = img.height + 'px';
-  };
-});
-
-document.getElementById('save-btn').addEventListener('click', async () => {
-  try {
-    const img        = document.getElementById('original-image');
-    const drawCanvas = document.getElementById('drawing-canvas');
-
-    const maskDataUrl = makeMask(drawCanvas, img.naturalWidth, img.naturalHeight, false);
-    const maskUrl     = await uploadFile(await (await fetch(maskDataUrl)).blob(), 'mask.png');
-
-    const photoUrl  = sessionStorage.getItem('uploadedPhotoUrl') || null;
-    const rawAction = sessionStorage.getItem('action');
-    const action    = rawAction && rawAction !== 'null' ? rawAction : null;
-    const rawPrompt = sessionStorage.getItem('promptText');
-    const prompt    = rawPrompt && rawPrompt !== 'null' ? rawPrompt : null;
-
-    const extra = {};                               
-    const outfitIdx = localStorage.getItem('selectedOutfitIndex');
-    const gender    = localStorage.getItem('selectedGender');
-    if (outfitIdx) extra.outfit = Number(outfitIdx); 
-    if (gender)    extra.gender = gender;             
-
-    if (action && prompt) {
-      const payload = { ...extra, photo: photoUrl, mask: maskUrl };   
-      send(action, { data: JSON.stringify(payload) });
-
-    } else if (action && !prompt) {
-      send(action, { ...extra, photo: photoUrl, mask: maskUrl });     
-
-    } else {
-      const payload = { ...extra, photo: photoUrl, mask: maskUrl }; 
-      send(null, { data: JSON.stringify(payload) });
+  <!------------ LOG-HEAVY СКРИПТ ------------>
+  <script>
+    /**
+     * Унифицированный лог-хелпер.
+     * @param {string} step   — краткое описание шага
+     * @param {any=}   data   — доп. данные
+     */
+    function logStep(step, data = null) {
+      const ts = new Date().toISOString();
+      if (data !== null) {
+        console.log(`📸 [PHOTO-MASTER] ${ts} — ${step}:`, data);
+      } else {
+        console.log(`📸 [PHOTO-MASTER] ${ts} — ${step}`);
+      }
     }
 
-  } catch (err) {
-    console.error('Ошибка при обработке фото:', err);
-    alert('Не удалось сохранить изображение. Попробуйте ещё раз.');
-  }
-});
-</script>
+    /*--------------------------------------------------
+     *  DOMContentLoaded — инициализация страницы
+     *-------------------------------------------------*/
+    document.addEventListener('DOMContentLoaded', () => {
+      logStep('DOMContentLoaded event');
 
+      const dataUrl = sessionStorage.getItem('selectedImage');
+      logStep('sessionStorage.getItem("selectedImage")', dataUrl);
 
+      const img = document.getElementById('original-image');
+      if (dataUrl) {
+        img.src = dataUrl;
+        logStep('custom image src set', img.src);
+      } else {
+        logStep('fallback image src (default)', img.src);
+      }
 
+      img.onload = () => {
+        logStep('img.onload fired', {
+          naturalWidth: img.naturalWidth,
+          naturalHeight: img.naturalHeight
+        });
 
+        const canvas = document.getElementById('drawing-canvas');
+        canvas.width  = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.style.width  = img.width  + 'px';
+        canvas.style.height = img.height + 'px';
+
+        logStep('canvas sized', {
+          canvasWidth: canvas.width,
+          canvasHeight: canvas.height,
+          styleWidth: canvas.style.width,
+          styleHeight: canvas.style.height
+        });
+      };
+    });
+
+    /*--------------------------------------------------
+     *  Click «Готово»  —  основной пайплайн
+     *-------------------------------------------------*/
+    document.getElementById('save-btn').addEventListener('click', async () => {
+      console.group('🖱️  save-btn clicked');
+
+      try {
+        logStep('CLICK handler started');
+
+        const img        = document.getElementById('original-image');
+        const drawCanvas = document.getElementById('drawing-canvas');
+
+        /*---------- 1. Генерим mask PNG ----------*/
+        console.time('makeMask');
+        const maskDataUrl = makeMask(
+          drawCanvas,
+          img.naturalWidth,
+          img.naturalHeight,
+          false
+        );
+        console.timeEnd('makeMask');
+        logStep('maskDataUrl generated', maskDataUrl?.substring(0, 80) + '…');
+
+        /*---------- 2. Заливаем mask на сервер ----------*/
+        console.time('uploadFile(mask)');
+        const maskBlob = await (await fetch(maskDataUrl)).blob();
+        const maskUrl  = await uploadFile(maskBlob, 'mask.png');
+        console.timeEnd('uploadFile(mask)');
+        logStep('mask uploaded', maskUrl);
+
+        /*---------- 3. Читаем session/local storage ----------*/
+        const photoUrl  = sessionStorage.getItem('uploadedPhotoUrl') || null;
+        logStep('sessionStorage.uploadedPhotoUrl', photoUrl);
+
+        const rawAction = sessionStorage.getItem('action');
+        logStep('sessionStorage.action', rawAction);
+        const action    = rawAction && rawAction !== 'null' ? rawAction : null;
+
+        const rawPrompt = sessionStorage.getItem('promptText');
+        logStep('sessionStorage.promptText', rawPrompt);
+        const prompt    = rawPrompt && rawPrompt !== 'null' ? rawPrompt : null;
+
+        const extra = {};
+        const outfitIdx = localStorage.getItem('selectedOutfitIndex');
+        logStep('localStorage.selectedOutfitIndex', outfitIdx);
+        const gender    = localStorage.getItem('selectedGender');
+        logStep('localStorage.selectedGender', gender);
+
+        if (outfitIdx) extra.outfit = Number(outfitIdx);
+        if (gender)    extra.gender = gender;
+
+        /*---------- 4. Формируем payload и вызываем send() ----------*/
+        let payloadToSend;
+
+        if (action && prompt) {
+          payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
+          logStep('Branch: action && prompt', { action, prompt, payloadToSend });
+
+          console.time('send(action, {data})');
+          send(action, { data: JSON.stringify(payloadToSend) });
+          console.timeEnd('send(action, {data})');
+
+        } else if (action && !prompt) {
+          payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
+          logStep('Branch: action && !prompt', { action, payloadToSend });
+
+          console.time('send(action, {…})');
+          send(action, { ...extra, photo: photoUrl, mask: maskUrl });
+          console.timeEnd('send(action, {…})');
+
+        } else {
+          payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
+          logStep('Branch: !action', { payloadToSend });
+
+          console.time('send(null, {data})');
+          send(null, { data: JSON.stringify(payloadToSend) });
+          console.timeEnd('send(null, {data})');
+        }
+
+        logStep('Send completed OK');
+
+      } catch (err) {
+        logStep('❌ ERROR in click handler', err);
+        console.error('Ошибка при обработке фото:', err);
+        alert('Не удалось сохранить изображение. Попробуйте ещё раз.');
+      } finally {
+        console.groupEnd();  //🖱️  save-btn clicked
+      }
+    });
+  </script>
+
+  <!------------ Остальные подключаемые скрипты (оригинальные без изменений) ------------>
   <script src="/js/upload.js"></script>
   <script src="/js/photo-master.js"></script>
   <script src="/js/theme-switcher.js"></script>
