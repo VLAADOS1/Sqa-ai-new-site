@@ -1,51 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/upload.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <title>Saqa.AI - Загрузка фото</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/upload.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+  <title>Saqa.AI - Загрузка фото</title>
+  <style>
+    .disabled {
+      pointer-events: none;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
-    <div class="wrapper">
-        <main class="main">
-            <div class="banner-container anime-item">
-                <div class="banner"></div>
+  <div class="wrapper">
+    <main class="main">
+      <div class="banner-container anime-item">
+        <div class="banner"></div>
+      </div>
+      <div class="settings-container">
+        <div class="settings-info">
+          <a href="/pages/upgrade.html" class="settings-back-btn">
+            <div class="settings-back-icon">
+              <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5.25006 8.5L1.75006 5L5.25006 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
-            <div class="settings-container">
-                <div class="settings-info">
-                    <a href="/pages/upgrade.html" class="settings-back-btn">
-                        <div class="settings-back-icon">
-                            <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M5.25006 8.5L1.75006 5L5.25006 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </a>
-                    <div class="setting-text-container">
-                        <h1 class="settings-title anime-item">Сменить объект</h1>
-                        <p class="settings-text anime-item">Замени что угодно на что угодно</p>
-                    </div>
-                </div>
-                <div class="settings-btn-container anime-item">
-                    <div class="text-frame" contenteditable="true" aria-placeholder="Опишите что хотите увидеть..."></div>
-                    <div class="btn-container">
-                        <button class="select-btn" id="upload">Выбрать фото</button>
-                        <div class="select-btn-container anime-item">
-                            <a href="/pages/photo-master.html" class="select-btn">
-                                <span class="select-btn-text">Генерировать - 2</span>
-                                <img src="/images/coin.png" alt="" class="select-btn-icon">
-                            </a>
-                        </div>
-                    </div>
-                </div>
+          </a>
+          <div class="setting-text-container">
+            <h1 class="settings-title anime-item">Сменить объект</h1>
+            <p class="settings-text anime-item">Замени что угодно на что угодно</p>
+          </div>
+        </div>
+        <div class="settings-btn-container anime-item">
+          <div class="text-frame" contenteditable="true" id="prompt" aria-placeholder="Опишите что хотите увидеть..."></div>
+          <div class="btn-container">
+            <button class="select-btn" id="upload">Выбрать фото</button>
+            <div class="select-btn-container anime-item">
+              <a href="#" class="select-btn disabled" id="generate-btn">
+                <span class="select-btn-text">Генерировать - 2</span>
+                <img src="/images/coin.png" alt="" class="select-btn-icon" />
+              </a>
             </div>
-        </main>
-    </div>
-    <script src="/js/theme-switcher.js"></script>
-    <script src="/js/animation.js"></script>
-    <script src="/js/select-photo.js"></script>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <input type="file" id="fileInput" accept="image/*" style="display:none" />
+
+  <script src="/js/theme-switcher.js"></script>
+  <script src="/js/animation.js"></script>
+  <script src="/js/select-photo.js"></script>
+  <script src="/js/upload.js"></script>
+
+  <script>
+    (function() {
+      const btnUpload = document.getElementById('upload');
+      const inputFile = document.getElementById('fileInput');
+      const btnGenerate = document.getElementById('generate-btn');
+      const prompt = document.getElementById('prompt');
+
+      let selectedImage = null;
+      let promptText = '';
+
+      const updateButtonState = () => {
+        promptText = prompt.innerText.trim();
+        const isValid = selectedImage && promptText.length > 0;
+        btnGenerate.classList.toggle('disabled', !isValid);
+      };
+
+      btnUpload.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        inputFile.click();
+      });
+
+      inputFile.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          selectedImage = e.target.result;
+          sessionStorage.setItem('selectedImage', selectedImage);
+          updateButtonState();
+        };
+        reader.readAsDataURL(file);
+
+        try {
+          const link = await uploadFile(file, file.name);
+          console.log('Файл загружен на внешний сервер:', link);
+          sessionStorage.setItem('uploadedPhotoUrl', link);
+          sessionStorage.setItem('action', 'change_object');
+        } catch (err) {
+          console.error('Ошибка загрузки:', err);
+        }
+      });
+
+      prompt.addEventListener('input', () => {
+        updateButtonState();
+      });
+
+      btnGenerate.addEventListener('click', event => {
+        event.preventDefault();
+        if (btnGenerate.classList.contains('disabled')) return;
+        sessionStorage.setItem('promptText', promptText);
+        window.location.href = '/pages/photo-master.html';
+      });
+    })();
+  </script>
 </body>
 </html>

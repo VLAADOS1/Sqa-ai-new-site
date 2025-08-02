@@ -1,4 +1,8 @@
 function send(action, payload = {}) {
-  const data = JSON.stringify({ action, ...payload });
-  Telegram.WebApp?.sendData(data);
+  const out =
+    action && action !== 'null'
+      ? { action, ...payload }
+      : { ...payload };
+
+  Telegram.WebApp?.sendData(JSON.stringify(out));
 }

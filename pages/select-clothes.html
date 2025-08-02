@@ -144,5 +144,31 @@
     <script src="/js/theme-switcher.js"></script>
     <script src="/js/gender-switch.js"></script>
     <script src="/js/animation.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.carousel .card img').forEach(img => {
+    img.addEventListener('click', () => {
+      localStorage.setItem('selectedClothesSrc', img.src);
+
+      const carousel = img.closest('.carousel');
+      const genderId = carousel ? carousel.id : 'girl';     
+      const gender   = genderId === 'man' ? 'male' : 'female';
+      localStorage.setItem('selectedGender', gender);
+
+      const selector     = genderId === 'man'
+                          ? '.carousel#man .card img'
+                          : '.carousel#girl .card img';
+      const imagesGender = Array.from(document.querySelectorAll(selector));
+      const outfitIndex  = imagesGender.indexOf(img) + 1;     
+      localStorage.setItem('selectedOutfitIndex', outfitIndex);
+
+      const linkParent = img.closest('a[href]');
+      if (!linkParent) window.location.href = '/pages/selected-clothes.html';
+    });
+  });
+});
+</script>
+
+
 </body>
 </html>

@@ -32,10 +32,8 @@
         </div>
         <div class="settings-btn-container anime-item">
           <div class="btn-container">
-            <!-- Кнопка выбора фото -->
             <button class="select-btn" id="upload">Выбрать фото</button>
             <div class="select-btn-container anime-item">
-              <!-- Генерация: теперь id у ссылки, href убран -->
               <a href="#" class="select-btn" id="generate-btn">
                 <span class="select-btn-text">Генерировать - 2</span>
                 <img src="/images/coin.png" alt="" class="select-btn-icon">
@@ -75,6 +73,7 @@
         reader.onload = function(e) {
           selectedDataUrl = e.target.result;
           sessionStorage.setItem('selectedImage', selectedDataUrl);
+          sessionStorage.setItem('action', 'erase_object');
         };
         reader.readAsDataURL(file);
 

@@ -1,70 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/photo-master.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <title>Saqa.AI - Фото-мастерская</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/photo-master.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>Saqa.AI - Фото-мастерская</title>
 </head>
 <body>
-    <div class="wrapper">
-        <main class="main">
-            <div class="settings-info">
-                <a href="/pages/navigations.html" class="settings-back-btn">
-                    <div class="settings-back-icon">
-                        <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5.25006 8.5L1.75006 5L5.25006 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                </a>
-                <div class="setting-text-container">
-                    <h1 class="settings-title anime-item">Фото мастерская</h1>
-                    <p class="settings-text anime-item">В данном разделе представлен широкий выбор 
-                        <br>фильтров, в котором вы можете сделать фото
-                    </p>
-                </div>
+  <div class="wrapper">
+    <main class="main">
+      <div class="settings-info">
+        <a href="/pages/navigations.html" class="settings-back-btn">
+          <div class="settings-back-icon">
+            <svg width="7" height="10" viewBox="0 0 7 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.25006 8.5L1.75006 5L5.25006 1.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </a>
+        <div class="setting-text-container">
+          <h1 class="settings-title anime-item">Фото мастерская</h1>
+          <p class="settings-text anime-item">
+            В данном разделе представлен широкий выбор <br />
+            фильтров, в котором вы можете сделать фото
+          </p>
+        </div>
+      </div>
+      <div class="image-preview">
+        <div class="my-image">
+          <div class="card anime-item">
+            <img src="/images/exxxiee2.jpg" alt="" id="original-image" />
+            <canvas id="drawing-canvas"></canvas>
+          </div>
+          <div class="tools anime-item">
+            <div class="tools-bg active-tool" id="brush-tool">
+              <img src="/images/icons/brush.png" alt="" class="tools-icon" />
             </div>
-            <div class="image-preview">
-                <div class="my-image">
-                    <div class="card anime-item">
-                        <!-- Здесь будет динамический src из sessionStorage -->
-                        <img src="/images/exxxiee2.jpg" alt="" id="original-image">
-                        <canvas id="drawing-canvas"></canvas>
-                    </div>
-                    <div class="tools anime-item">
-                        <div class="tools-bg active-tool" id="brush-tool">
-                            <img src="/images/icons/brush.png" alt="" class="tools-icon">
-                        </div>
-                        <div class="tools-bg" id="eraser-tool">
-                            <img src="/images/icons/eraser.png" alt="" class="tools-icon">
-                        </div>
-                    </div>
-                </div>
-                <div class="select-btn-container anime-item">
-                    <button class="select-btn" id="save-btn">Готово</button>
-                </div> 
+            <div class="tools-bg" id="eraser-tool">
+              <img src="/images/icons/eraser.png" alt="" class="tools-icon" />
             </div>
-        </main>
-    </div>
+          </div>
+        </div>
+        <div class="select-btn-container anime-item">
+          <button class="select-btn" id="save-btn">Готово</button>
+        </div>
+      </div>
+    </main>
+  </div>
 
-    <script>
+<script>
 document.addEventListener('DOMContentLoaded', () => {
   const dataUrl = sessionStorage.getItem('selectedImage');
   const img = document.getElementById('original-image');
-  if (dataUrl) {
-    img.src = dataUrl;
-  } else {
-    console.warn('SessionStorage не содержит ключа selectedImage — будет показано дефолтное изображение');
-  }
+  if (dataUrl) img.src = dataUrl;
+
   img.onload = () => {
     const canvas = document.getElementById('drawing-canvas');
     canvas.width  = img.naturalWidth;
     canvas.height = img.naturalHeight;
-    canvas.style.width  = img.width + 'px';
+    canvas.style.width  = img.width  + 'px';
     canvas.style.height = img.height + 'px';
   };
 });
@@ -73,37 +70,49 @@ document.getElementById('save-btn').addEventListener('click', async () => {
   try {
     const img        = document.getElementById('original-image');
     const drawCanvas = document.getElementById('drawing-canvas');
-    const nw         = img.naturalWidth;
-    const nh         = img.naturalHeight;
 
-    const maskDataUrl = makeMask(drawCanvas, nw, nh, false);
-    const resp        = await fetch(maskDataUrl);
-    const maskBlob    = await resp.blob();
+    const maskDataUrl = makeMask(drawCanvas, img.naturalWidth, img.naturalHeight, false);
+    const maskUrl     = await uploadFile(await (await fetch(maskDataUrl)).blob(), 'mask.png');
 
-    const maskUrl = await uploadFile(maskBlob, 'mask.png');
-    console.log('Маска загружена:', maskUrl);
+    const photoUrl  = sessionStorage.getItem('uploadedPhotoUrl') || null;
+    const rawAction = sessionStorage.getItem('action');
+    const action    = rawAction && rawAction !== 'null' ? rawAction : null;
+    const rawPrompt = sessionStorage.getItem('promptText');
+    const prompt    = rawPrompt && rawPrompt !== 'null' ? rawPrompt : null;
 
-    const photoUrl = sessionStorage.getItem('uploadedPhotoUrl') || null;
-    if (!photoUrl) {
-      console.warn('Не найдена ссылка на исходное фото в sessionStorage');
+    const extra = {};                               
+    const outfitIdx = localStorage.getItem('selectedOutfitIndex');
+    const gender    = localStorage.getItem('selectedGender');
+    if (outfitIdx) extra.outfit = Number(outfitIdx); 
+    if (gender)    extra.gender = gender;             
+
+    if (action && prompt) {
+      const payload = { ...extra, photo: photoUrl, mask: maskUrl };   
+      send(action, { data: JSON.stringify(payload) });
+
+    } else if (action && !prompt) {
+      send(action, { ...extra, photo: photoUrl, mask: maskUrl });     
+
+    } else {
+      const payload = { ...extra, photo: photoUrl, mask: maskUrl }; 
+      send(null, { data: JSON.stringify(payload) });
     }
 
-    send('erase_object', { photo: photoUrl, mask: maskUrl });
-
   } catch (err) {
-    console.error('Ошибка при загрузке/отправке маски:', err);
+    console.error('Ошибка при обработке фото:', err);
+    alert('Не удалось сохранить изображение. Попробуйте ещё раз.');
   }
 });
+</script>
 
 
-    </script>
-    <script src="/js/upload.js"></script>
-    <script src="/js/photo-master.js"></script>
-    <script src="/js/theme-switcher.js"></script>
-    <script src="/js/animation.js"></script>
-    <script src="/js/mask-generator.js"></script>
-    <script src="/js/webapp.js"></script>
 
+
+  <script src="/js/upload.js"></script>
+  <script src="/js/photo-master.js"></script>
+  <script src="/js/theme-switcher.js"></script>
+  <script src="/js/animation.js"></script>
+  <script src="/js/mask-generator.js"></script>
+  <script src="/js/webapp.js"></script>
 </body>
 </html>
- 

@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <title>Saqa.AI - Фото-мастерская</title>
 </head>
 <body>
@@ -54,7 +55,7 @@
                         </div>
                         <span class="setting-span">Сменить объект</span>
                     </a>
-                    <a href="/pages/upload-4.html" class="setting-btn">
+                    <a href="#" class="setting-btn" id="animate-photo-btn">
                         <div class="setting-icon-container">
                             <img src="/images/upgrade5.png" alt="" class="setting-icon" id="small">
                         </div>
@@ -66,5 +67,12 @@
     </div>
     <script src="/js/theme-switcher.js"></script>
     <script src="/js/animation.js"></script>
+    <script src="/js/webapp.js"></script>
+    <script>
+    document.getElementById('animate-photo-btn').addEventListener('click', function(event) {
+        event.preventDefault(); 
+        send('create_video');  
+    });
+    </script>
 </body>
 </html>
