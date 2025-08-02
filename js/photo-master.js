@@ -152,18 +152,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function saveImage() {
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCanvas.width = originalImage.width;
-        tempCanvas.height = originalImage.height;
+        // const tempCanvas = document.createElement('canvas');
+        // const tempCtx = tempCanvas.getContext('2d');
+        // tempCanvas.width = originalImage.width;
+        // tempCanvas.height = originalImage.height;
         
-        tempCtx.drawImage(originalImage, 0, 0);
-        tempCtx.drawImage(canvas, 0, 0);
+        // tempCtx.drawImage(originalImage, 0, 0);
+        // tempCtx.drawImage(canvas, 0, 0);
         
-        const link = document.createElement('a');
+        // const link = document.createElement('a');
         // link.download = `drawing-${new Date().getTime()}.png`;
-        link.href = tempCanvas.toDataURL('image/png');
-        link.click();
+        // link.href = tempCanvas.toDataURL('image/png');
+        // link.click();
     }
 
     canvas.addEventListener('mousedown', startDrawing);
