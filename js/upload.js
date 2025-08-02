@@ -2,32 +2,38 @@ async function uploadFile(fileOrBlob, name) {
   const endpoints = [
     {
       url: 'https://tmpfiles.org/api/v1/upload',
-      field: 'file',
-      pick: r => r?.data?.url || r?.url
+      field: 'file',            // ← строго file
+      parse: async (res) => {   // ← plain-text
+        const text = await res.text();
+        return text.trim();     // https://tmpfiles.org/xxxx/your.png
+      }
     },
     {
       url: 'https://uguu.se/upload.php',
       field: 'files[]',
-      pick: r => Array.isArray(r) ? r[0]?.url : r?.url
+      parse: (res) => res.json().then(j => j?.files?.[0]?.url)
     }
   ];
 
   for (const ep of endpoints) {
-    try {
-      const fd = new FormData();
-      fd.append(ep.field, fileOrBlob, name);
+    const fd = new FormData();
+    fd.append(ep.field, fileOrBlob, name);
 
-      const res = await fetch(ep.url, {
-        method: 'POST',
-        body: fd
-      });
+    const res = await fetch(ep.url, { method: 'POST', body: fd });
 
-      const text = await res.text();
-      const data = JSON.parse(text);
-      const link = ep.pick(data);
-      if (link) return link.trim();
-    } catch (e) {}
+    /* ---------- Debug ---------- */
+    logStep(`uploadFile → ${ep.url} status`, res.status);
+    /* --------------------------- */
+
+    if (!res.ok) {
+      const body = await res.text();
+      logStep('uploadFile server reply (error)', body);
+      // пробуем следующий endpoint
+      continue;
+    }
+
+    const link = await ep.parse(res);
+    if (link) return link;
   }
-
   throw new Error('upload failed');
 }
