@@ -201,16 +201,22 @@
         logStep('Send completed OK');
         localStorage.setItem('selectedGender', null);
         localStorage.setItem('selectedOutfitIndex', null);
+        sessionStorage.setItem('promptText', null);
+        sessionStorage.setItem('action', null);    
 
       } catch (err) {
         logStep('❌ ERROR in click handler', err);
         localStorage.setItem('selectedGender', null);
         localStorage.setItem('selectedOutfitIndex', null);
+        sessionStorage.setItem('promptText', null);
+        sessionStorage.setItem('action', null);    
         console.error('Ошибка при обработке фото:', err);
         alert('Не удалось сохранить изображение. Попробуйте ещё раз.');
       } finally {
         localStorage.setItem('selectedGender', null);
         localStorage.setItem('selectedOutfitIndex', null);
+        sessionStorage.setItem('promptText', null);
+        sessionStorage.setItem('action', null);    
         console.groupEnd();  //🖱️  save-btn clicked
       }
     });
