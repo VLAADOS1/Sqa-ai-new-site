@@ -124,14 +124,16 @@
         const img        = document.getElementById('original-image');
         const drawCanvas = document.getElementById('drawing-canvas');
 
-        /*---------- 1. Генерим mask PNG ----------*/
-        console.time('makeMask');
+        const invertMask = sessionStorage.getItem('maskInvert') === 'true';
+
         const maskDataUrl = makeMask(
-          drawCanvas,
-          img.naturalWidth,
-          img.naturalHeight,
-          false
+        drawCanvas,
+        img.naturalWidth,
+        img.naturalHeight,
+        invertMask                
         );
+
+        sessionStorage.removeItem('maskInvert');
         console.timeEnd('makeMask');
         logStep('maskDataUrl generated', '…1111113311');
         logStep('maskDataUrl generated', maskDataUrl?.substring(0, 80) + '…');
