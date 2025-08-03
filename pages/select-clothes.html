@@ -139,12 +139,19 @@
             </div>
         </main>
     </div>
-    <script src="/js/main.js"></script>
-    <script src="/js/carousel.js"></script>
-    <script src="/js/theme-switcher.js"></script>
-    <script src="/js/gender-switch.js"></script>
-    <script src="/js/animation.js"></script>
+<script src="/js/main.js" defer></script>
+<script src="/js/carousel.js" defer></script>
+<script src="/js/theme-switcher.js" defer></script>
+<script src="/js/gender-switch.js" defer></script>
+<script src="/js/animation.js" defer></script>
+
 <script>
+
+document.querySelectorAll('.carousel .card img').forEach(img => {
+  img.setAttribute('loading', 'lazy');
+});
+
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.carousel .card img').forEach(img => {
     img.addEventListener('click', () => {
