@@ -173,7 +173,8 @@
         console.log('prompt:', rawPrompt);
 
         let payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
-
+        if (prompt) payloadToSend.prompt = prompt;
+        
         if (action && prompt) {
             logStep('Branch: action && prompt', { action, prompt, payloadToSend });
 
