@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const reader = new FileReader();
     reader.onload = ev => {
       sessionStorage.setItem('selectedImage', ev.target.result);
-      sessionStorage.setItem('action', null);     
+    //   sessionStorage.setItem('action', null);     
     };
     reader.readAsDataURL(file);
 
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const uploadedUrl = await uploadFile(file, file.name);
       sessionStorage.setItem('uploadedPhotoUrl', uploadedUrl);
 
-      sessionStorage.setItem('promptText', null);
+    //   sessionStorage.setItem('promptText', null);
 
       console.log('Файл загружен:', uploadedUrl);
       window.location.href = '/pages/photo-master.html';

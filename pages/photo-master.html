@@ -178,9 +178,9 @@
             logStep('Branch: action && prompt', { action, prompt, payloadToSend });
 
             console.time('send(action, {data})');
-            send(action, { data: JSON.stringify(payloadToSend) });
+            send(action, payloadToSend);
             console.timeEnd('send(action, {data})');
-            console.log(action, { data: payloadToSend })
+            console.log(action, payloadToSend )
         } else if (action && !prompt) {
             logStep('Branch: action && !prompt', { action, payloadToSend });
 
@@ -191,7 +191,7 @@
             logStep('Branch: !action', { payloadToSend });
 
             console.time('send(null, {data})');
-            send(null, { data: payloadToSend });
+            send(null, payloadToSend);
             console.timeEnd('send(null, {data})');
         }
 
