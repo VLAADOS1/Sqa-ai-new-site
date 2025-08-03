@@ -14,7 +14,7 @@ async function uploadFile(fileOrBlob, name) {
 
   for (const ep of endpoints) {
     try {
-      console.log(`Uploading to ${ep.url}...`);
+      console.log(`Uploading to`);
       const fd = new FormData();
       fd.append(ep.field, fileOrBlob, name);
 
@@ -26,7 +26,7 @@ async function uploadFile(fileOrBlob, name) {
       const text = await res.text();
       const data = JSON.parse(text);
       const link = ep.pick(data);
-      сonsole.log(`Upload successful: ${link}`);
+      // сonsole.log(`Upload successful: ${link}`);
       if (link) return link.trim();
     } catch (e) {}
   }
