@@ -180,7 +180,7 @@
             console.time('send(action, {data})');
             send(action, { data: JSON.stringify(payloadToSend) });
             console.timeEnd('send(action, {data})');
-            console.log(action, { data: JSON.stringify(payloadToSend) })
+            console.log(action, { data: payloadToSend })
         } else if (action && !prompt) {
             logStep('Branch: action && !prompt', { action, payloadToSend });
 
