@@ -168,11 +168,10 @@
         if (gender && gender !== 'null') {
         extra.gender = gender;
         }
+        console.log('uploadedPhotoUrl:', photoUrl);
+        console.log('action:', rawAction);
+        console.log('prompt:', rawPrompt);
 
-        // Проверка: если нет photoUrl или maskUrl, выходим
-        if (!photoUrl || typeof maskUrl === 'undefined' || maskUrl === null) {
-        logStep('Abort: Missing required photoUrl or maskUrl');
-        } else {
         let payloadToSend = { ...extra, photo: photoUrl, mask: maskUrl };
 
         if (action && prompt) {
@@ -195,7 +194,6 @@
             console.time('send(null, {data})');
             send(null, { data: JSON.stringify(payloadToSend) });
             console.timeEnd('send(null, {data})');
-        }
         }
 
         logStep('Send completed OK');
