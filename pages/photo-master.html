@@ -180,14 +180,13 @@
             console.time('send(action, {data})');
             send(action, { data: JSON.stringify(payloadToSend) });
             console.timeEnd('send(action, {data})');
-
+            console.log(action, { data: JSON.stringify(payloadToSend) })
         } else if (action && !prompt) {
             logStep('Branch: action && !prompt', { action, payloadToSend });
 
             console.time('send(action, {...})');
             send(action, { ...extra, photo: photoUrl, mask: maskUrl });
             console.timeEnd('send(action, {...})');
-
         } else {
             logStep('Branch: !action', { payloadToSend });
 
