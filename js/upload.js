@@ -26,6 +26,7 @@ async function uploadFile(fileOrBlob, name) {
       const text = await res.text();
       const data = JSON.parse(text);
       const link = ep.pick(data);
+      сonsole.log(`Upload successful: ${link}`);
       if (link) return link.trim();
     } catch (e) {}
   }
