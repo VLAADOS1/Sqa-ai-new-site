@@ -399,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             const filterKey = filterMap[btnId];
                             if (filterKey) {
-                                send(filterKey);
+                                send('generate_photo', { filter: filterKey });
                             }
                             console.log(`Filter ${filterKey} sent`);
                         };
