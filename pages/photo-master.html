@@ -191,7 +191,7 @@
             logStep('Branch: !action', { payloadToSend });
 
             console.time('send(null, {data})');
-            send(null, { data: JSON.stringify(payloadToSend) });
+            send(null, { data: payloadToSend });
             console.timeEnd('send(null, {data})');
         }
 
