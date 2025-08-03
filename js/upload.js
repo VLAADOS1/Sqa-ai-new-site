@@ -14,6 +14,7 @@ async function uploadFile(fileOrBlob, name) {
 
   for (const ep of endpoints) {
     try {
+      console.log(`Uploading to ${ep.url}...`);
       const fd = new FormData();
       fd.append(ep.field, fileOrBlob, name);
 
