@@ -72,11 +72,12 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           selectedDataUrl = e.target.result;
+          sessionStorage.setItem('action', 'erase_object');
           sessionStorage.setItem('selectedImage', selectedDataUrl);
           sessionStorage.setItem('action', 'erase_object');
         };
         reader.readAsDataURL(file);
-
+        sessionStorage.setItem('action', 'erase_object');
         try {
           const link = await uploadFile(file, file.name);
           console.log('Файл загружен на внешний сервер:', link);
